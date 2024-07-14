@@ -32,7 +32,7 @@ fn create_ticket(title: String, description: String, status: Status) -> Ticket {
     Ticket{
         title : title.into(),
         description : description.into(),
-        status:Status::ToDo,
+        status,
     }
 }
 
