@@ -58,14 +58,25 @@ impl TicketStore {
     /// If the `id` passed in matches a ticket in the store, we return the edited ticket.
     /// If it doesn't, we return `None`.
     pub fn update(&mut self, id: &TicketId, patch: TicketPatch) -> Option<&Ticket> {
-        todo!()
+        self.data.entry(id.clone()).and_modify(move |t| {
+            patch.title.map(|v| { t.title = v });
+            patch.description.map(|v| { t.description = v });
+            patch.status.map(|v| { t.status = v });
+            t.updated_at = Utc::now();
+        });
+        self.get(id)
     }
 
     /// If the `id` passed in matches a ticket in the store, we return the deleted ticket
     /// with some additional metadata.
     /// If it doesn't, we return `None`.
     pub fn delete(&mut self, id: &TicketId) -> Option<DeletedTicket> {
-        todo!()
+        self.data.remove(id).map(|t| {
+            DeletedTicket {
+                ticket: t,
+                deleted_at: Utc::now(),
+            }
+        })
     }
 
     fn generate_id(&mut self) -> TicketId {

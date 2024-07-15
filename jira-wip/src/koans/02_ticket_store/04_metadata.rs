@@ -29,9 +29,11 @@ impl TicketStore {
         }
     }
 
-    pub fn save(&mut self, ticket: Ticket) -> TicketId {
+    pub fn save(&mut self, ticket: &mut Ticket) -> TicketId {
         let id = self.generate_id();
-        self.data.insert(id, ticket);
+        ticket.set_id(id);
+        ticket.set_created_at(Utc::now());
+        self.data.insert(id, ticket.clone());
         id
     }
 
@@ -50,6 +52,8 @@ pub struct Ticket {
     title: String,
     description: String,
     status: Status,
+    created_at:Option<DateTime<Utc>>,
+    id:Option<TicketId>,
 }
 
 impl Ticket {
@@ -66,13 +70,19 @@ impl Ticket {
     }
 
     // The datetime when the ticket was saved in the store, if it was saved.
-    pub fn created_at(&self) -> __ {
-        todo!()
+    pub fn created_at(&self) -> Option<DateTime<Utc>>{
+        self.created_at
     }
 
     // The id associated with the ticket when it was saved in the store, if it was saved.
-    pub fn id(&self) -> __ {
-        todo!()
+    pub fn id(&self) -> Option<&TicketId> {
+        self.id.as_ref()
+    }
+    pub fn set_id(& mut self, id:TicketId) {
+        self.id = Some(id)
+    }
+    pub fn set_created_at(& mut self, date_time: DateTime<Utc>) {
+        self.created_at = Some(date_time)
     }
 }
 
@@ -91,6 +101,8 @@ pub fn create_ticket(title: String, description: String, status: Status) -> Tick
         title,
         description,
         status,
+        created_at:None,
+        id:None,
     }
 }
 
@@ -112,7 +124,7 @@ mod tests {
         let ticket = generate_ticket(Status::ToDo);
         let mut store = TicketStore::new();
 
-        let ticket_id = store.save(ticket.clone());
+        let ticket_id = store.save(&mut ticket.clone());
         let retrieved_ticket = store.get(&ticket_id).unwrap();
 
         assert_eq!(Some(&ticket_id), retrieved_ticket.id());
@@ -137,7 +149,7 @@ mod tests {
 
         for expected_id in 1..n_tickets {
             let ticket = generate_ticket(Status::ToDo);
-            let ticket_id = store.save(ticket);
+            let ticket_id = store.save(&mut ticket.clone());
             assert_eq!(expected_id, ticket_id);
         }
     }
