@@ -1,8 +1,12 @@
 #![allow(dead_code)]
 #![allow(unused_doc_comments)]
-use directories::ProjectDirs;
 use std::error::Error;
 use std::path::PathBuf;
+
+use directories::ProjectDirs;
+
+use crate::path_to_enlightenment::persistence::save;
+use crate::path_to_enlightenment::store_recap::TicketStore;
 
 /// The `main` function is the entry point of your application.
 ///
@@ -16,11 +20,11 @@ use std::path::PathBuf;
 /// Brace yourself!
 fn main() -> Result<(), Box<dyn Error>> {
     // Uncomment these lines after 02_ticket_store/09_store_recap
-    /*
+
        // Comment these line after 03_cli/01_persistence
-       use path_to_enlightenment::store_recap::TicketStore;
-       let mut ticket_store = TicketStore::new();
-    */
+       //use path_to_enlightenment::store_recap::TicketStore;
+       let ticket_store = TicketStore::new();
+
 
     // Uncomment these lines after 03_cli/01_persistence
     /*
@@ -38,10 +42,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     */
 
     // Uncomment these lines after 03_cli/01_persistence
-    /*
+
         // Save the store state to disk after we have completed our action.
         save(&ticket_store, &data_store_filename());
-    */
+
     Ok(())
 }
 

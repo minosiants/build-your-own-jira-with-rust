@@ -1,19 +1,7 @@
 use std::collections::HashMap;
+
 use super::recap::Ticket;
 
-/// Let's define a type-alias for our ticket id.
-/// It's a lightweight technique to add a semantic layer to the underlying data type.
-///
-/// The underlying type remains `u32`.
-/// This remains valid code:
-/// ```
-/// let number: u32 = 1;
-/// let ticket_id: TicketId = number;
-/// ```
-/// If we want to be sure we aren't mixing up ticket ids and `u32` variables with
-/// a different semantic meaning, we would have to create a new type,
-/// e.g. `struct TicketId(u32)`.
-/// For now this doesn't feel necessary - we don't have many `u32`s flying around.
 pub type TicketId = u32;
 
 // Feel free to add more fields to `TicketStore` to solve this koan!
@@ -65,9 +53,10 @@ impl TicketStore {
 
 #[cfg(test)]
 mod tests {
+    use fake::{Fake, Faker};
+
     use super::*;
     use super::super::recap::{create_ticket, Status};
-    use fake::{Faker, Fake};
 
     #[test]
     fn a_ticket_with_a_home()

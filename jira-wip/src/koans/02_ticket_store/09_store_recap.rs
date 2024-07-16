@@ -5,13 +5,17 @@
 //! That will be the focus of the next (and last) section.
 //!
 //! Take your time to review what you did - you have come a long way!
-use super::id_generation::TicketId;
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
+use std::fmt::{Display, Formatter};
 
-#[derive(Debug, PartialEq)]
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+
+use derive_more::{Add, Display as DisplaMore, From, Into};
+use super::id_generation::TicketId;
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct TicketStore {
     data: HashMap<TicketId, Ticket>,
     current_id: TicketId,
@@ -81,7 +85,7 @@ impl TicketStore {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TicketTitle(String);
 
 impl TicketTitle {
@@ -98,7 +102,7 @@ impl TicketTitle {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct TicketDescription(String);
 
 impl TicketDescription {
@@ -152,7 +156,7 @@ impl std::fmt::Display for ValidationError {
     }
 }
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub enum Status {
     ToDo,
     InProgress,
@@ -160,8 +164,9 @@ pub enum Status {
     Done,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize,DisplaMore, From)]
 pub struct Ticket {
+    #[display("int: {_0}")]
     id: TicketId,
     title: TicketTitle,
     description: TicketDescription,
@@ -190,6 +195,7 @@ impl Ticket {
         &self.updated_at
     }
 }
+
 
 #[cfg(test)]
 mod tests {
